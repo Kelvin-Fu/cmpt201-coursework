@@ -1,0 +1,38 @@
+#include <unistd.h>   // for sbrk(), write()
+#include <stdint.h>   // for uint64_t
+#include <string.h>   // for memset()
+#include <stdio.h>    // for snprintf()
+#include <stdlib.h>   // for exit()
+#include <sys/types.h>
+#include <sys/uio.h>
+
+#define EXTRA_SIZE 256
+#define BLOCK_SIZE 128
+#define BUF_SIZE 128
+
+struct header {
+    uint64_t size;
+    struct header *next;
+};
+
+// Prototype for sbrk (fixes undeclared warning on some systems)
+extern void *sbrk(intptr_t increment);
+
+// error handling helper
+void handle_error(const char *msg) {
+    write(STDERR_FILENO, msg, strlen(msg));
+    write(STDERR_FILENO, "\n", 1);
+    exit(1);
+}
+
+// fixed print function
+void print_out(char *format, void *data, size_t data_size) {
+    char buf[BUF_SIZE];
+    ssize_t len = snprintf(buf, BUF_SIZE, format,
+                           data_size == sizeof(uint64_t) ? *(uint64_t *)data
+                                                         : *(void **)data);
+    if (len < 0)
+        handle_error("snprintf");
+    write(STDOUT_FILENO, buf, len);
+}
+
