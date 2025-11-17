@@ -1,0 +1,13 @@
+#include <unistd.h>
+#include <fcntl.h>
+
+int main(){
+  char buf[12];
+  int td = open("/test.c",O_RDWR |O_CREAT);
+  write(td, "HELLO, WORLD" , 12);
+  lseek(td,6,SEEK_SET);
+  read(td,buf,12);
+  write(STDOUT_FILENO,buf,6);
+  close(td);
+}
+
