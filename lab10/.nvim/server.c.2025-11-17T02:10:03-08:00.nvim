@@ -24,8 +24,8 @@ each client.
 * How are sockets made non-blocking?
   - Sockets are made non-blocking using fcntl() with the O_NONBLOCK flag
 * What sockets are made non-blocking?
-  - The server socket (sfd) in run_acceptor()
-  - All client sockets (cfd) in run_client()
+  - The server socket (sfd) in run_acceptor() 
+  - All client sockets (cfd) in run_client() 
   - Every socket used for I/O in this program is non-blocking
 * Why are these sockets made non-blocking? What purpose does it serve?
   - Non-blocking allows threads to poll for activity without getting stuck
@@ -168,7 +168,7 @@ static void *run_client(void *args) {
       struct list_handle *list_handle = cargs->list_handle;
       // TODO: Safely use add_to_list to add new_node to the list
       pthread_mutex_lock(cargs->list_lock);
-      add_to_list(list_handle, new_node);
+      add_to_list(list_handle,new_node);
       pthread_mutex_unlock(cargs->list_lock);
     }
   }
@@ -207,8 +207,7 @@ static void *run_acceptor(void *args) {
         num_clients++;
 
         // TODO: Create a new thread to handle the client
-        pthread_create(&threads[num_clients - 1], NULL, run_client,
-                       &client_args[num_clients - 1]);
+        pthread_create(&threads[num_clients-1],NULL,run_client,&client_args[num_clients-1]);
       }
     }
   }
@@ -220,7 +219,7 @@ static void *run_acceptor(void *args) {
     // TODO: Set flag to stop the client thread
     // TODO: Wait for the client thread and close its socket
     client_args[i].run = false;
-    pthread_join(threads[i], NULL);
+    pthread_join(threads[i],NULL);
     close(client_args[i].cfd);
   }
 
